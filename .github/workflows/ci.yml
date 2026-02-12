@@ -1,0 +1,31 @@
+name: Build and Push PDF SaaS
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    # Le robot utilisera une machine Ubuntu neuve
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Le robot récupère ton code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Le robot se connecte à Docker Hub (il ira chercher les secrets que tu as déjà configurés)
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # 3. Le robot construit l'image et la pousse sur ton compte
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        # Le nom de ta nouvelle image !
+        tags: regulusthe01/mon-saas-pdf:latest
